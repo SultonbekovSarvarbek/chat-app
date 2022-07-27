@@ -1,32 +1,53 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <v-btn href="https://dteam.dev/" target="_blank" text>
+        <span class="mr-2">:DTeam</span>
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+      <v-btn to="/" class="mr-5">
+        <span class="mr-2">Home</span>
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn to="/login" class="mr-5" v-if="!isAuthenticated">
+        <span class="mr-2">Login</span>
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
+      <v-btn to="/register" v-if="!isAuthenticated">
+        <span class="mr-2">Register</span>
+        <v-icon>mdi-account-plus</v-icon>
+      </v-btn>
+      <v-btn class="ml-5" to="/chat" v-if="isAuthenticated">
+        <span class="mr-2">Chat</span>
+        <v-icon>mdi-message-bulleted</v-icon>
+      </v-btn>
+      <v-btn class="ml-5" @click="logoutFromApp" v-if="isAuthenticated">
+        <span class="mr-2">Log out</span>
+        <v-icon>mdi-logout-variant</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <v-main>
+      <v-container>
+        <router-view />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+import { mapActions, mapState } from "vuex";
+export default {
+  name: "App",
+  computed: {
+    ...mapState("user", ["isAuthenticated"]),
+  },
+  methods: {
+    ...mapActions("user", ["logout"]),
+    logoutFromApp() {
+      this.logout();
+      this.$router.push("/login");
+    },
+  },
+};
+</script>
