@@ -1,13 +1,10 @@
 <template>
   <div>
     <div class="room-messages">
-      <div v-if="roomMessages && roomMessages.length">
-        <div v-for="message in roomMessages" :key="message.id">
-          <strong>{{ message.user.username }} </strong>: {{ message.text }}
-        </div>
-      </div>
-      <div v-else>
-        <span>No messages</span>
+      <div v-for="messageItem in messages" :key="messageItem.id">
+        {{ messageItem }}
+        <strong>{{ messageItem.user.username }} </strong>:
+        {{ messageItem.text }}
       </div>
     </div>
     <v-form @submit.prevent="sendMessage">
@@ -24,6 +21,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { getToken } from "@/utils/auth";
 export default {
   name: "RoomPage",
   data() {
@@ -31,23 +29,49 @@ export default {
       roomId: this.$route.params.id,
       message: "",
       messages: [],
+      chatSocket: null,
     };
   },
   methods: {
     ...mapActions("chat", ["getRoomMessages"]),
     sendMessage() {
-      console.log("send message");
+      this.chatSocket.send(
+        JSON.stringify({
+          type: "new",
+          body: {
+            text: this.message,
+          },
+        })
+      );
+      this.message = "";
+    },
+    async fetchMessages() {
+      try {
+        await this.getRoomMessages(this.roomId);
+        this.messages = [...this.roomMessages];
+      } catch (error) {
+        return error;
+      }
     },
   },
   computed: {
     ...mapState("chat", ["rooms", "roomMessages"]),
   },
+
   async created() {
-    try {
-      await this.getRoomMessages(this.roomId);
-    } catch (error) {
-      return error;
-    }
+    await this.fetchMessages();
+  },
+  mounted() {
+    this.chatSocket = new WebSocket(
+      `ws://0.0.0.0:8000/ws/chat/room/${this.roomId}/?token=${getToken()}`
+    );
+    this.chatSocket.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      this.messages.push(data.body);
+    };
+    this.chatSocket.onclose = () => {
+      console.error("chat socket closed!");
+    };
   },
 };
 </script>

@@ -23,7 +23,7 @@ router.beforeEach(async (to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken();
 
-  if (hasToken !== "undefined" && hasToken) {
+  if (hasToken) {
     const token = parseJwt(getToken());
     if (token && token.exp < Date.now() / 1000) {
       store.dispatch("user/resetToken");
