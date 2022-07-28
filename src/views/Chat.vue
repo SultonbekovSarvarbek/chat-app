@@ -22,7 +22,7 @@
       <v-form @submit.prevent="createForm">
         <v-select
           :items="users"
-          item-text="first_name"
+          item-text="username"
           item-value="id"
           label="Users"
           outlined

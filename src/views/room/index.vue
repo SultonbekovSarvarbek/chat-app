@@ -33,7 +33,9 @@
         outlined
         hide-details="auto"
       ></v-text-field>
-      <v-btn elevation="1" type="submit">Send</v-btn>
+      <v-btn elevation="1" :disabled="!message.length" type="submit"
+        >Send</v-btn
+      >
     </v-form>
   </div>
 </template>
@@ -66,6 +68,7 @@ export default {
     },
     deleteMessage(messageId) {
       console.log(messageId);
+
       this.chatSocket.send(
         JSON.stringify({
           type: "delete",
@@ -108,7 +111,7 @@ export default {
       }
     };
     this.chatSocket.onclose = () => {
-      console.error("chat socket closed!");
+      alert("Error, chat socket closed!");
     };
   },
 };
