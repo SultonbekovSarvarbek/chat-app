@@ -16,10 +16,6 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 
 const store = new Vuex.Store({
   modules,
-  //   state: {},
-  //   mutations: {},
-  //   actions: {},
-  //   modules: {},
 });
 
 export default store;
