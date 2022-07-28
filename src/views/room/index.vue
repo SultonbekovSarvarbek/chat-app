@@ -2,7 +2,6 @@
   <div>
     <div class="room-messages">
       <div v-for="messageItem in messages" :key="messageItem.id">
-        {{ messageItem }}
         <strong>{{ messageItem.user.username }} </strong>:
         {{ messageItem.text }}
       </div>
