@@ -36,9 +36,7 @@ const actions = {
   // eslint-disable-next-line no-unused-vars
   async register({ commit }, userRegisterData) {
     try {
-      await this.$http.post("/auth/register/", userRegisterData).then((res) => {
-        setToken(res.data.access);
-      });
+      await this.$http.post("/auth/register/", userRegisterData);
     } catch (error) {
       throw new Error(error);
     }
