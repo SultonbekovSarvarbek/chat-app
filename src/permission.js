@@ -2,7 +2,7 @@ import router from "./router";
 import store from "./store";
 import parseJwt from "./services/parseJwt";
 
-import { getToken } from "@/utils/auth"; // get token from cookie
+import { getToken } from "@/utils/auth";
 
 const whiteList = ["/login", "/register"]; // no redirect whitelist
 
