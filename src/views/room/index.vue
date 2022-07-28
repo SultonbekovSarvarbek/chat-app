@@ -1,10 +1,29 @@
 <template>
   <div>
     <div class="room-messages">
-      <div v-for="messageItem in messages" :key="messageItem.id">
-        {{ messageItem }}
-        <strong>{{ messageItem.user.username }} </strong>:
-        {{ messageItem.text }}
+      <div v-if="messages && messages.length">
+        <div v-for="messageItem in messages" :key="messageItem.id">
+          <div class="d-flex align-center justify-space-between mb-2">
+            <div>
+              <strong>{{ messageItem.user.username }} </strong>
+              <small v-if="userInfo.username === messageItem.user.username"
+                >youself</small
+              >:
+              {{ messageItem.text }}
+            </div>
+            <v-btn
+              v-if="userInfo.username === messageItem.user.username"
+              elevation="1"
+              small
+              color="primary"
+              @click="deleteMessage(messageItem.id)"
+              >delete</v-btn
+            >
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <p>No messages</p>
       </div>
     </div>
     <v-form @submit.prevent="sendMessage">
@@ -45,10 +64,22 @@ export default {
       );
       this.message = "";
     },
+    deleteMessage(messageId) {
+      console.log(messageId);
+      this.chatSocket.send(
+        JSON.stringify({
+          type: "delete",
+          body: {
+            id: messageId,
+          },
+        })
+      );
+    },
     async fetchMessages() {
       try {
-        await this.getRoomMessages(this.roomId);
-        this.messages = [...this.roomMessages];
+        await this.getRoomMessages(this.roomId).then((res) => {
+          this.messages = [...res.data];
+        });
       } catch (error) {
         return error;
       }
@@ -56,6 +87,7 @@ export default {
   },
   computed: {
     ...mapState("chat", ["rooms", "roomMessages"]),
+    ...mapState("user", ["userInfo"]),
   },
 
   async created() {
@@ -67,7 +99,13 @@ export default {
     );
     this.chatSocket.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      this.messages.push(data.body);
+      if (data.type === "delete") {
+        this.messages = this.messages.filter(
+          (item) => item.id !== data.body.id
+        );
+      } else {
+        this.messages.push(data.body);
+      }
     };
     this.chatSocket.onclose = () => {
       console.error("chat socket closed!");

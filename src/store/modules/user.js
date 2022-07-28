@@ -1,24 +1,24 @@
 import { setToken, removeToken } from "@/utils/auth";
 const state = {
   isAuthenticated: false,
+  userInfo: {},
 };
 const mutations = {
-  loginSuccess(state) {
+  LOGIN_SUCCESS(state) {
     state.isAuthenticated = true;
   },
   RESET_USER_DATA(state) {
     state.isAuthenticated = false;
   },
   SET_USER_DATA(state, payload) {
-    state.user = payload.data;
-    state.isAuthenticated = true;
+    state.userInfo = payload;
   },
 };
 const actions = {
   async login({ commit }, userLoginData) {
     try {
       await this.$http.post("/auth/login/", userLoginData).then((res) => {
-        commit("loginSuccess");
+        commit("LOGIN_SUCCESS");
         setToken(res.data.access);
       });
     } catch (error) {
@@ -33,19 +33,10 @@ const actions = {
     commit("RESET_USER_DATA");
     removeToken();
   },
-  async getInfo({ commit }) {
-    try {
-      const res = await this.$http.get("/profile");
-      commit("SET_USER_DATA", res);
-      return res;
-    } catch (error) {
-      return error;
-    }
-  },
+  // eslint-disable-next-line no-unused-vars
   async register({ commit }, userRegisterData) {
     try {
       await this.$http.post("/auth/register/", userRegisterData).then((res) => {
-        commit("loginSuccess");
         setToken(res.data.access);
       });
     } catch (error) {

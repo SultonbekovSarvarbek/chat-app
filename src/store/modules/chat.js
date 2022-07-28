@@ -43,9 +43,9 @@ const actions = {
   },
   getRoomMessages({ commit }, roomID) {
     try {
-      this.$http.get(`/chat/room/${roomID}/messages/`).then((res) => {
-        commit("SET_MESSAGES", res);
-      });
+      const res = this.$http.get(`/chat/room/${roomID}/messages/`);
+      commit("SET_MESSAGES", res);
+      return res;
     } catch (error) {
       throw new Error(error);
     }

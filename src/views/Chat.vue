@@ -1,16 +1,10 @@
 <template>
   <div>
     <div class="chat-users mt-5">
-      <h2>Users</h2>
-      <v-select
-        :items="users"
-        item-text="first_name"
-        item-value="id"
-        label="Users"
-        dense
-        outlined
-        v-model="user"
-      ></v-select>
+      <h2>All Users</h2>
+      <div v-for="user in users" :key="user.id">
+        {{ user.username }}
+      </div>
     </div>
     <div class="chat-rooms mt-5">
       <h2>Rooms</h2>
@@ -54,7 +48,6 @@ export default {
   name: "ChatPage",
   data() {
     return {
-      user: null,
       member_ids: [],
     };
   },

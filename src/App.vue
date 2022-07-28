@@ -18,6 +18,11 @@
         <span class="mr-2">Register</span>
         <v-icon>mdi-account-plus</v-icon>
       </v-btn>
+      <div v-if="isAuthenticated">
+        <span
+          >Welcome <strong>{{ userInfo.username }}</strong></span
+        >
+      </div>
       <v-btn class="ml-5" to="/chat" v-if="isAuthenticated">
         <span class="mr-2">Chat</span>
         <v-icon>mdi-message-bulleted</v-icon>
@@ -40,7 +45,7 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "App",
   computed: {
-    ...mapState("user", ["isAuthenticated"]),
+    ...mapState("user", ["isAuthenticated", "userInfo"]),
   },
   methods: {
     ...mapActions("user", ["logout"]),
