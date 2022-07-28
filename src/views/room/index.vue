@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-btn
+      elevation="1"
+      color="primary"
+      small
+      class="mb-5"
+      @click="goBackToRooms"
+      >Go Back (Rooms)</v-btn
+    >
     <div class="room-messages">
       <div v-if="messages && messages.length">
         <div v-for="messageItem in messages" :key="messageItem.id">
@@ -7,7 +15,7 @@
             <div>
               <strong>{{ messageItem.user.username }} </strong>
               <small v-if="userInfo.username === messageItem.user.username"
-                >youself</small
+                >yourself</small
               >:
               {{ messageItem.text }}
             </div>
@@ -15,7 +23,7 @@
               v-if="userInfo.username === messageItem.user.username"
               elevation="1"
               small
-              color="primary"
+              color="error"
               @click="deleteMessage(messageItem.id)"
               >delete</v-btn
             >
@@ -27,15 +35,23 @@
       </div>
     </div>
     <v-form @submit.prevent="sendMessage">
-      <v-text-field
-        v-model="message"
-        dense
-        outlined
-        hide-details="auto"
-      ></v-text-field>
-      <v-btn elevation="1" :disabled="!message.length" type="submit"
-        >Send</v-btn
-      >
+      <div class="d-flex align-center justify-space-between">
+        <v-text-field
+          v-model.trim="message"
+          dense
+          outlined
+          placeholder="your message"
+          hide-details="auto"
+        ></v-text-field>
+        <v-btn
+          class="ml-3"
+          elevation="1"
+          :disabled="!message.length"
+          type="submit"
+          color="primary"
+          >Send</v-btn
+        >
+      </div>
     </v-form>
   </div>
 </template>
@@ -67,8 +83,6 @@ export default {
       this.message = "";
     },
     deleteMessage(messageId) {
-      console.log(messageId);
-
       this.chatSocket.send(
         JSON.stringify({
           type: "delete",
@@ -77,6 +91,9 @@ export default {
           },
         })
       );
+    },
+    goBackToRooms() {
+      this.$router.push("/chat");
     },
     async fetchMessages() {
       try {
