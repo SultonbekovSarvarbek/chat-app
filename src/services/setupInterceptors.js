@@ -1,11 +1,11 @@
 import axios from "axios";
 import { getToken } from "@/utils/auth";
 
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
 });
 
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token) {
@@ -18,7 +18,7 @@ instance.interceptors.request.use(
   }
 );
 
-instance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (res) => {
     return res;
   },
@@ -27,4 +27,4 @@ instance.interceptors.response.use(
   }
 );
 
-export default instance;
+export default axiosInstance;

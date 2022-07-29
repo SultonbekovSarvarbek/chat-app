@@ -4,11 +4,11 @@ import router from "./router";
 import store from "./store";
 import axios from "axios";
 import vuetify from "./plugins/vuetify";
-import setup from "./services/setupInterceptors";
+import axiosInstance from "./services/setupInterceptors"; // axios instance
 import "./permission";
 
 Vue.config.productionTip = false;
-Vue.prototype.$http = setup;
+Vue.prototype.$http = axiosInstance;
 
 new Vue({
   router,
